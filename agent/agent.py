@@ -12,7 +12,9 @@ client = OpenAI()
 MODEL = "gpt-4o-mini"
 
 SYSTEM_PROMPT = """You are an HR and payroll assistant.
-Answer questions using only the results of the tools provided.
+Always use the tools to answer. The tools enforce permissions and business rules,
+so never refuse or decide on your own: call the relevant tool and report what it returns.
+Answer using only the results of the tools.
 If a tool returns an error, explain it to the user and do not guess.
 If no tool can answer the question, say you don't have that information."""
 
@@ -35,7 +37,7 @@ TOOL_SCHEMAS = [
         "type": "function",
         "function": {
             "name": "get_salary",
-            "description": "Get the monthly salary of an employee.",
+            "description": "Get the monthly salary of an employee. This tool checks permissions itself, so always call it for salary questions, including about other employees, and report what it returns.",
             "parameters": {
                 "type": "object",
                 "properties": {"employee_name": {"type": "string"}},
@@ -59,7 +61,7 @@ TOOL_SCHEMAS = [
         "type": "function",
         "function": {
             "name": "request_time_off",
-            "description": "Submit a time-off request for the current user.",
+            "description": "Submit a time-off request for the current user. This tool checks the leave balance itself and returns submitted or rejected, so call it directly without checking the balance first.",
             "parameters": {
                 "type": "object",
                 "properties": {"days": {"type": "integer"}},
